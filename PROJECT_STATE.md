@@ -141,8 +141,73 @@ claim it IS Spotify's model.
   (sklearn, numba-free) — an approximate overlay, honestly noted. The canonical
   reducer.transform path still works fine on Colab.
 
-- **(c) Vercel website:** ⬜ later — Vercel UI + Supabase storage + Colab/Modal backend.
-  Now grounded on the Atlas (FMA), not personal taste. Reuses atlas_artifacts + lenses.
+- **(c) Web app — PHASE 1 design LOCKED (2026-05-31), not built yet.** See section below.
+
+## WEB APP — "Pulse" (Phase 1 plan, design locked 2026-05-31)
+**One-liner:** a free site where anyone adds songs (search by name, or later a playlist),
+sees them plotted in BOTH lenses (Sound + Feature) side by side, reads what their pattern
+means, compares to a reference, and downloads a shareable **Pulse Card**.
+
+### Architecture (the key constraint)
+The site is TWO pieces because AST needs torch (too heavy for browser / Vercel serverless):
+- **Frontend** (pages, maps, card): local for dev → **Vercel free "Hobby" tier** in prod.
+  Vercel = free, sign up with GitHub, NOT template-locked (full free reign), auto-deploys
+  from a connected GitHub repo on push.
+- **ML backend** (30s clip → AST embedding + interpretable features → project onto atlas):
+  local **FastAPI in pulse_env** for dev → **HuggingFace Spaces free CPU** in prod.
+  AST on a 30s clip is a few seconds on CPU = feasible free. Loads `atlas_artifacts/`.
+  Projection uses the **numba-free kNN placement** (see make_atlas_maps.py) so it's robust.
+
+### Audio + search source (DECIDED)
+- **iTunes Search API** (FREE, no key, still active) powers BOTH the type-a-name
+  autocomplete dropdown AND the 30-second preview clip we feed to AST. This is the core.
+  Caveat: ~20 req/min/IP (proxy + cache via backend); coverage broad but not 100%.
+- **Apple Music API / MusicKit** (read an Apple Music *playlist*) needs a PAID Apple dev
+  account ($99/yr) → NOT free → out of scope for Phase 1.
+- **Spotify playlist**: reading tracks is free (free Spotify dev app, client-credentials);
+  Spotify's own 30s preview is largely deprecated, so match track names → iTunes preview.
+  → This is the only viable FREE playlist path = **Phase 1b**.
+- **YouTube link**: yt-dlp works but YouTube blocks server IPs / ToS-gray → fragile,
+  secondary/best-effort only.
+
+### Phase 1 scope (free, achievable)
+- Add songs by name (iTunes autocomplete), one-by-one or several at once.
+- Plot in BOTH lenses side by side, interactive on site.
+- Plain-English explanations of each map + "what your pattern says about you"
+  (reuse `assign_taste_type`).
+- Compare your pattern vs a reference = for now MY Liked-songs pattern (we have it).
+- Download: each lens as an image + a combined **Pulse Card** (both patterns, 2 colours).
+- Dark / light mode.
+- MOCK public gallery (fake cards) to show the vision.
+
+### Phase 2 (needs storage)
+- Real public gallery: user-chosen usernames + saved cards → **Supabase free tier**.
+- Playlist import (Spotify-read → iTunes-preview).
+
+### Aesthetic direction (from user's reference images, saved in
+`.cursor/.../assets/`)
+- **Pulse Card** = "specimen card" style (ref img 5): abstract shape on a colour gradient
+  (generated from sound fingerprint) + made-up name/username + 8-feature stat table with
+  tick-slider marks.
+- **Feature lens** = bipolar-axis "glowing path" (ref img 2) — our 8 features are already
+  bipolar (Warm↔Bright, Smooth↔Percussive, Steady↔Dynamic, Beat-driven↔Melodic, …).
+- **2D map / density** = soft grainy KDE heatmap, dotted grid, labelled axes (ref img 3).
+- **Compare** = translucent overlapping shapes / radial (ref img 4).
+- **Public gallery + per-card dot arrangement** = constellation/star-map (ref img 1),
+  i.e. the user's "astrology sign" idea.
+- Sharing: NO direct-from-site share needed; users screenshot / download the card/image.
+
+### Build order
+1. Minimal LOCAL prototype: tiny FastAPI backend (pulse_env) + one HTML page → prove the
+   full flow (search → preview → AST → kNN project → plot) with real songs.
+2. Polished version (dark/light, heatmap maps, Pulse Card).
+3. Deploy: backend → HF Spaces, frontend → Vercel.
+4. Phase 2: Supabase storage → gallery + usernames + playlist import.
+
+### Open / not-yet-decided
+- Frontend stack: plain static HTML+JS for the prototype, likely **Next.js** for the
+  polished Vercel app (TBD — confirm with user).
+- HF Spaces cold-start latency + iTunes preview coverage to be validated in step 1.
 
 ## Still TODO before publishing publicly
 - **Rotate the Genius key on genius.com** — it was exposed earlier, so scrubbing the
