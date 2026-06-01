@@ -122,12 +122,24 @@ claim it IS Spotify's model.
   ⚠ ACTION NEEDED: set `REPO_URL` in the Colab to the real GitHub repo AFTER publishing,
   and verify the pinned versions let the UMAP pickle load on Colab (if not, may need a
   re-fit fallback).
-- **Atlas Colab:** ✅ BUILT — `Project_Pulse_Atlas_Colab.ipynb`. Downloads FMA subset,
-  extracts AST + interpretable features on 30s clips (GPU), fits Sound + Feature UMAP
-  lenses coloured by genre, overlays the 99 personal songs, optional "upload your own."
-  ⚠ NOT runnable-tested locally (7 GB FMA download) — first real run happens in Colab.
-  ⚠ Set `REPO_URL` in the notebook after publishing to GitHub.
-  HOW TO RUN: colab.research.google.com → File → Upload notebook → Run all (GPU runtime).
+- **Atlas Colab:** ✅ BUILT + ✅ RAN FOR REAL (2026-05-31). `Project_Pulse_Atlas_Colab.ipynb`
+  ran on Colab GPU: 8 genres × 40 = 320 FMA tracks, AST + interpretable features on 30s
+  clips, fit Sound + Feature UMAP lenses, overlaid the 99 personal songs. First real
+  Atlas build succeeded. `REPO_URL` already set to mdmmirfan/Project_Pulse.
+  HOW TO RUN: colab.research.google.com → File → Open notebook → GitHub → mdmmirfan/
+  Project_Pulse → Run all (GPU runtime).
+- **Atlas artifacts:** ✅ SAVED + committed to `atlas_artifacts/` (sound+feature
+  scaler/reducer joblibs + `atlas.csv` with both lenses' coords). The expensive build
+  is now frozen + reproducible; no need to rebuild.
+- **Labelled Atlas maps:** ✅ `make_atlas_maps.py` renders standalone interactive HTML
+  from `atlas_artifacts/` (NO GPU/rebuild): `Project_Pulse_Atlas_Sound_Map.html` +
+  `Project_Pulse_Atlas_Feature_Map.html`. Every dot has a HOVER label (song/FMA id +
+  genre + Like/Dislike + named features). Run: `pulse_env/bin/python make_atlas_maps.py`.
+  ⚠ LOCAL NUMBA CAVEAT: pulse_env's numba 0.65.1 + numpy 2.4 won't JIT on Python 3.13,
+  so `umap.reducer.transform()` crashes locally. Workaround used in make_atlas_maps.py:
+  place the 99 personal songs via inverse-distance-weighted kNN among the atlas tracks
+  (sklearn, numba-free) — an approximate overlay, honestly noted. The canonical
+  reducer.transform path still works fine on Colab.
 
 - **(c) Vercel website:** ⬜ later — Vercel UI + Supabase storage + Colab/Modal backend.
   Now grounded on the Atlas (FMA), not personal taste. Reuses atlas_artifacts + lenses.
