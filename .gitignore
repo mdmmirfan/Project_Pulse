@@ -14,6 +14,9 @@ data/
 cookies.txt
 .cache
 
+# --- Redundant zip (the unzipped atlas_artifacts/ folder is committed instead) ---
+atlas_artifacts.zip
+
 # --- Secrets (never commit) ---
 .env
 
