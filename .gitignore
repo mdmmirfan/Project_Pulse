@@ -1,0 +1,29 @@
+# --- Virtual environment ---
+pulse_env/
+venv/
+.venv/
+
+# --- Raw audio (large + copyrighted; not redistributable) ---
+data/
+*.wav
+*.mp3
+*.m4a
+
+# --- Large installers / local junk ---
+*.pkg
+cookies.txt
+.cache
+
+# --- Secrets (never commit) ---
+.env
+
+# --- Python ---
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# --- OS ---
+.DS_Store
+
+# NOTE: artifacts/ and the *.csv data ARE committed on purpose —
+# they are the shareable model + coordinates that make the map reusable.

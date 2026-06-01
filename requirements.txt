@@ -1,0 +1,24 @@
+# Project Pulse — Python dependencies
+# Python 3.13 recommended (developed on 3.13).
+#
+# Install the core set to run the notebook end-to-end from the saved data:
+#     pip install -r requirements.txt
+
+# --- Core: runs pulse_pipeline.ipynb from saved data + artifacts/ ---
+pandas==3.0.3
+numpy==2.4.4
+scikit-learn==1.8.0
+umap-learn==0.5.12
+joblib==1.5.3
+plotly==6.7.0
+seaborn==0.13.2
+matplotlib==3.10.9
+ipykernel==7.2.0
+
+# --- Audio engine: ONLY needed to project NEW songs (place_audio_files)
+# --- or to rebuild the dataset from raw audio. Heavy install (~GBs).
+# --- Uncomment if you need them:
+# librosa==0.11.0
+# torch==2.12.0
+# transformers==5.8.1
+# yt-dlp            # only to (re)download audio from playlists
