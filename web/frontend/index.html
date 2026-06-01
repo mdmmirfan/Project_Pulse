@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pulse — map your music by how it sounds</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <span class="dot"></span>
+        <h1>PULSE</h1>
+        <span class="tagline">map your music by how it <em>sounds</em></span>
+      </div>
+      <button class="theme-toggle" id="themeToggle">☀️ Light</button>
+    </header>
+
+    <section class="hero">
+      <h2>Where do your songs land in the sound universe?</h2>
+      <p>Add a few songs. We listen to <em>how they actually sound</em> — not genre, not
+        what the crowd streams — and plot them through two lenses on a map of 320 real
+        tracks. Same genre often scatters everywhere. That's the point.</p>
+
+      <div class="search">
+        <input id="searchInput" type="text" placeholder="Search a song…  (e.g. Blinding Lights)" autocomplete="off" />
+        <div id="dropdown" class="dropdown"></div>
+      </div>
+      <div class="hint">Free · powered by 30-second previews · nothing is uploaded or stored</div>
+    </section>
+
+    <div class="controls">
+      <span class="chip active" id="toggleAtlas">🌌 Atlas cloud</span>
+      <span class="chip" id="toggleMe">⭐ Compare with my taste (49 likes / 50 dislikes)</span>
+      <span class="chip" id="toggleLabels">🏷️ Song labels</span>
+    </div>
+
+    <div class="maps">
+      <div class="map-card">
+        <h3>🔊 Sound lens</h3>
+        <div class="sub">Deep neural fingerprint (AST). Nearness = sounds alike.</div>
+        <div id="soundPlot" class="plot"></div>
+        <div class="map-actions"><button class="mini-btn" data-dl="soundPlot">⤓ download image</button></div>
+      </div>
+      <div class="map-card">
+        <h3>🎚️ Feature lens</h3>
+        <div class="sub">Named acoustics (brightness, tempo, texture…).</div>
+        <div id="featurePlot" class="plot"></div>
+        <div class="map-actions"><button class="mini-btn" data-dl="featurePlot">⤓ download image</button></div>
+      </div>
+    </div>
+
+    <div class="lower">
+      <div class="panel">
+        <h3>Your songs</h3>
+        <div id="songList"><div class="empty">No songs yet — search above to drop your first one onto the map.</div></div>
+      </div>
+
+      <div class="panel">
+        <h3>Your Pulse Card</h3>
+        <div id="pulseCard">
+          <div class="pc-top">
+            <div class="pc-year" id="pcYear">2026</div>
+            <div class="pc-orb" id="pcOrb"></div>
+            <div class="pc-id" id="pcId">PULSE.000</div>
+          </div>
+          <div class="pc-body">
+            <div class="pc-name" id="pcName">YOUR PULSE</div>
+            <div class="pc-type" id="pcType">add songs to reveal your signature</div>
+            <div id="pcRows"></div>
+          </div>
+        </div>
+        <div class="map-actions" style="margin-top:12px">
+          <button class="mini-btn" id="downloadCard">⤓ download Pulse Card</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="lower">
+      <div class="panel">
+        <h3>What the two maps mean</h3>
+        <p style="color:var(--text-dim); line-height:1.6; font-size:14px;">
+          <b style="color:var(--text)">Sound lens</b> places each song by a 768-dimensional
+          neural fingerprint of how it actually sounds. Two songs sit close if they
+          <em>sound</em> similar — even across different genres.<br><br>
+          <b style="color:var(--text)">Feature lens</b> uses eight human-readable qualities
+          (brightness, tempo, percussiveness, dynamics, tonality, melody-vs-drums…). It's
+          the "why" behind the sound map.<br><br>
+          The background cloud is 320 real, genre-labelled tracks (FMA). Notice how one
+          genre scatters across the map: <b style="color:var(--text)">genre is a label,
+          sound is a measurement — and they don't line up.</b>
+        </p>
+      </div>
+      <div class="panel">
+        <h3>What your pattern says</h3>
+        <div id="meaning" style="color:var(--text-dim); line-height:1.6; font-size:14px;">
+          Your <b>taste type</b> and acoustic signature appear here once you've added songs.
+          It's built from real measurements of your songs compared to the whole atlas —
+          honest, not a horoscope. (Though it'll look like one. ✨)
+        </div>
+      </div>
+    </div>
+
+    <footer>Pulse · a Project Pulse prototype · maps sound, not behaviour</footer>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="/app.js"></script>
+</body>
+</html>

@@ -198,11 +198,23 @@ The site is TWO pieces because AST needs torch (too heavy for browser / Vercel s
 - Sharing: NO direct-from-site share needed; users screenshot / download the card/image.
 
 ### Build order
-1. Minimal LOCAL prototype: tiny FastAPI backend (pulse_env) + one HTML page → prove the
-   full flow (search → preview → AST → kNN project → plot) with real songs.
-2. Polished version (dark/light, heatmap maps, Pulse Card).
-3. Deploy: backend → HF Spaces, frontend → Vercel.
-4. Phase 2: Supabase storage → gallery + usernames + playlist import.
+1. ✅ DONE — LOCAL prototype BUILT + validated end-to-end (2026-05-31), in `web/`:
+   - `web/backend/engine.py` (load atlas, iTunes search, AST embed + features, kNN place,
+     taste type, reference overlay) + `web/backend/server.py` (FastAPI: /api/atlas,
+     /api/search, /api/place, serves the frontend).
+   - `web/frontend/` (index.html + styles.css + app.js): polished SPA, dark/light mode,
+     Plotly two-lens maps with the genre atlas cloud, YouTube-style autocomplete, song
+     list w/ taste type, specimen-style **Pulse Card** (bipolar signature sliders),
+     compare-with-my-taste toggle, image/card downloads.
+   - RUN: `pulse_env/bin/uvicorn web.backend.server:app --port 8000` → http://localhost:8000
+   - Needs ffmpeg (present) for .m4a previews; AST model cached locally.
+   - Verified in browser: searched + placed real songs (e.g. Bohemian Rhapsody → "Warm ·
+     Smooth · Steady · Melodic"), both lenses + Pulse Card render, dark+light both work.
+   - Added deps to pulse_env: fastapi, uvicorn[standard]. See `web/requirements.txt`.
+2. ⬜ NEXT — polish pass (heatmap/density styling, mock public gallery, the "constellation"
+   card arrangement, refine copy) + maybe migrate frontend to Next.js for Vercel.
+3. ⬜ Deploy: backend → HF Spaces, frontend → Vercel.
+4. ⬜ Phase 2: Supabase storage → gallery + usernames + playlist import (Spotify→iTunes).
 
 ### Open / not-yet-decided
 - Frontend stack: plain static HTML+JS for the prototype, likely **Next.js** for the

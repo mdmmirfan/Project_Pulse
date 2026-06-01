@@ -1,0 +1,12 @@
+# Backend deps for the Pulse web app (the ML backend, e.g. on HF Spaces).
+# Heavy ML deps mirror the main project; pin loosely for the prototype.
+fastapi
+uvicorn[standard]
+requests
+numpy
+pandas
+scikit-learn
+joblib
+librosa
+torch
+transformers
