@@ -12,99 +12,148 @@
   <div class="wrap">
     <header>
       <div class="brand">
-        <span class="dot"></span>
-        <h1>PULSE</h1>
-        <span class="tagline">map your music by how it <em>sounds</em></span>
+        <svg class="logo-icon" viewBox="0 0 48 48" aria-hidden="true">
+          <defs>
+            <radialGradient id="lg1" cx="30%" cy="30%"><stop offset="0%" stop-color="#fff" stop-opacity=".9"/><stop offset="100%" stop-color="#ff4d8d" stop-opacity="0"/></radialGradient>
+            <linearGradient id="lg2" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#22d3ee"/><stop offset="45%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#ff4d8d"/>
+            </linearGradient>
+          </defs>
+          <circle cx="24" cy="24" r="20" fill="url(#lg2)" opacity=".85"/>
+          <circle cx="18" cy="16" r="10" fill="url(#lg1)" opacity=".6"/>
+          <circle cx="32" cy="30" r="8" fill="#fff" opacity=".25"/>
+        </svg>
+        <div>
+          <h1>PULSE</h1>
+          <span class="tagline">map your music by how it <em>sounds</em></span>
+        </div>
       </div>
-      <button class="theme-toggle" id="themeToggle">☀️ Light</button>
+      <div class="header-actions">
+        <nav class="tabs" role="tablist">
+          <button class="tab active" data-tab="explore" role="tab">Explore</button>
+          <button class="tab" data-tab="about" role="tab">About</button>
+        </nav>
+        <button class="theme-toggle" id="themeToggle">☀️ Light</button>
+      </div>
     </header>
 
-    <section class="hero">
-      <h2>Where do your songs land in the sound universe?</h2>
-      <p>Add a few songs. We listen to <em>how they actually sound</em> — not genre, not
-        what the crowd streams — and plot them through two lenses on a map of 320 real
-        tracks. Same genre often scatters everywhere. That's the point.</p>
+    <div id="tabExplore" class="tab-panel active">
+      <section class="hero">
+        <h2>Where do your songs land by sound?</h2>
+        <p>We listen to the audio — not the store's genre tag — and show where your songs sit
+          among genre-coloured clouds. Same genre often scatters. That's the whole point.
+          Add <strong>6+ songs</strong> to unlock your Pulse Card.</p>
+        <div class="search">
+          <input id="searchInput" type="text" placeholder="Search a song…  (e.g. Blinding Lights)" autocomplete="off" />
+          <div id="dropdown" class="dropdown"></div>
+        </div>
+        <div class="hint">Free · 30-second previews · nothing stored</div>
+      </section>
 
-      <div class="search">
-        <input id="searchInput" type="text" placeholder="Search a song…  (e.g. Blinding Lights)" autocomplete="off" />
-        <div id="dropdown" class="dropdown"></div>
-      </div>
-      <div class="hint">Free · powered by 30-second previews · nothing is uploaded or stored</div>
-    </section>
-
-    <div class="controls">
-      <span class="chip active" id="toggleAtlas">🌌 Atlas cloud</span>
-      <span class="chip" id="toggleMe">⭐ Compare with my taste (49 likes / 50 dislikes)</span>
-      <span class="chip" id="toggleLabels">🏷️ Song labels</span>
-    </div>
-
-    <div class="maps">
-      <div class="map-card">
-        <h3>🔊 Sound lens</h3>
-        <div class="sub">Deep neural fingerprint (AST). Nearness = sounds alike.</div>
-        <div id="soundPlot" class="plot"></div>
-        <div class="map-actions"><button class="mini-btn" data-dl="soundPlot">⤓ download image</button></div>
-      </div>
-      <div class="map-card">
-        <h3>🎚️ Feature lens</h3>
-        <div class="sub">Named acoustics (brightness, tempo, texture…).</div>
-        <div id="featurePlot" class="plot"></div>
-        <div class="map-actions"><button class="mini-btn" data-dl="featurePlot">⤓ download image</button></div>
-      </div>
-    </div>
-
-    <div class="lower">
-      <div class="panel">
-        <h3>Your songs</h3>
-        <div id="songList"><div class="empty">No songs yet — search above to drop your first one onto the map.</div></div>
+      <div class="read-map panel">
+        <h3>How to read the map <span class="read-hint">(20 sec)</span></h3>
+        <ul class="read-list">
+          <li><strong>Cloud colour</strong> = dominant genre label on background tracks (from a research dataset).</li>
+          <li><strong>Cloud shape</strong> = irregular because one genre covers many different sounds.</li>
+          <li><strong>Hover a cloud</strong> = genre mix + what it sounds like (warm, fast, percussive…).</li>
+          <li><strong>Your stars</strong> = placed by <em>audio only</em>, linked as a constellation. Store genre is shown separately — it may not match where you land.</li>
+        </ul>
+        <p class="not-spotify">Not Spotify. Spotify uses what people stream; Pulse uses what the audio is.</p>
       </div>
 
-      <div class="panel">
-        <h3>Your Pulse Card</h3>
-        <div id="pulseCard">
-          <div class="pc-top">
-            <div class="pc-year" id="pcYear">2026</div>
-            <div class="pc-orb" id="pcOrb"></div>
-            <div class="pc-id" id="pcId">PULSE.000</div>
-          </div>
-          <div class="pc-body">
-            <div class="pc-name" id="pcName">YOUR PULSE</div>
-            <div class="pc-type" id="pcType">add songs to reveal your signature</div>
-            <div id="pcRows"></div>
+      <div class="controls">
+        <span class="chip active" id="toggleAtlas">🌌 Genre clouds</span>
+        <span class="chip active" id="toggleLabels">✦ Your song labels</span>
+        <span class="chip" data-camera="default" title="Reset view">↺ Reset</span>
+        <span class="chip" data-camera="top" title="Look from above">↑ Top</span>
+        <span class="chip" data-camera="side" title="Side view">→ Side</span>
+        <span class="chip" data-camera="front" title="Front view">↗ Front</span>
+      </div>
+
+      <div class="map-card map-single">
+        <div class="map-inner map-inner-wide">
+          <aside class="map-aside map-aside-wide">
+            <h3>The sound map</h3>
+            <p>Drag to rotate · scroll to zoom · double-click to reset. Use view chips if depth feels stuck. Your constellation connects on top.</p>
+            <div class="map-legend" id="mapLegend"></div>
+            <div class="map-status hidden" id="loaderAside" aria-live="polite">
+              <div class="status-ring" aria-hidden="true"></div>
+              <span class="status-text" id="loaderSub">Mapping…</span>
+            </div>
+          </aside>
+          <div class="map-plot-wrap">
+            <div id="mainPlot" class="plot plot-main"></div>
+            <button class="mini-btn map-dl" data-dl="mainPlot">⤓ download map</button>
           </div>
         </div>
-        <div class="map-actions" style="margin-top:12px">
-          <button class="mini-btn" id="downloadCard">⤓ download Pulse Card</button>
+      </div>
+
+      <div class="lower">
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Your songs</h3>
+            <span class="song-count" id="songCount"></span>
+          </div>
+          <div id="songList"><div class="empty">Search above to add your first song.</div></div>
+        </div>
+
+        <div class="panel">
+          <h3>Your Pulse Card</h3>
+          <div id="pulseCard">
+            <div class="pc-top">
+              <canvas id="pcSignature" width="600" height="240"></canvas>
+              <div class="pc-year" id="pcYear">2026</div>
+              <div class="pc-id" id="pcId">PULSE</div>
+            </div>
+            <div class="pc-body">
+              <div class="pc-name" id="pcName">Add Songs</div>
+              <div class="pc-type" id="pcType">signature unlocks at 6+ songs</div>
+              <div class="pc-rows-wrap">
+                <canvas id="pcGlowCanvas" class="pc-glow-canvas"></canvas>
+                <div id="pcRows"></div>
+              </div>
+            </div>
+          </div>
+          <div class="map-actions" style="margin-top:12px">
+            <button class="mini-btn" id="downloadCard">⤓ download Pulse Card</button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="lower">
-      <div class="panel">
-        <h3>What the two maps mean</h3>
-        <p style="color:var(--text-dim); line-height:1.6; font-size:14px;">
-          <b style="color:var(--text)">Sound lens</b> places each song by a 768-dimensional
-          neural fingerprint of how it actually sounds. Two songs sit close if they
-          <em>sound</em> similar — even across different genres.<br><br>
-          <b style="color:var(--text)">Feature lens</b> uses eight human-readable qualities
-          (brightness, tempo, percussiveness, dynamics, tonality, melody-vs-drums…). It's
-          the "why" behind the sound map.<br><br>
-          The background cloud is 320 real, genre-labelled tracks (FMA). Notice how one
-          genre scatters across the map: <b style="color:var(--text)">genre is a label,
-          sound is a measurement — and they don't line up.</b>
-        </p>
-      </div>
-      <div class="panel">
+      <div class="panel meaning-panel">
         <h3>What your pattern says</h3>
-        <div id="meaning" style="color:var(--text-dim); line-height:1.6; font-size:14px;">
-          Your <b>taste type</b> and acoustic signature appear here once you've added songs.
-          It's built from real measurements of your songs compared to the whole atlas —
-          honest, not a horoscope. (Though it'll look like one. ✨)
+        <div id="meaning" class="meaning-text">
+          Add at least <strong>6 songs</strong> for a plain-English read on your listening pattern.
         </div>
       </div>
     </div>
 
-    <footer>Pulse · a Project Pulse prototype · maps sound, not behaviour</footer>
+    <div id="tabAbout" class="tab-panel">
+      <section class="about-hero">
+        <h2>How Pulse came to be</h2>
+        <p>I mapped 99 of my own liked/disliked songs and found taste overlaps heavily in sound —
+          acoustics explain part of taste, not all of it. Pulse is a public map: 320 tracks from the
+          Free Music Archive (8 genres). Honest caveat: FMA skews Western/indie — not all of world music.</p>
+      </section>
+      <div class="about-grid">
+        <div class="panel">
+          <h3>Not Spotify</h3>
+          <p class="about-p">Spotify recommends from <em>what similar people stream</em>. Pulse places songs from
+            <em>what the audio sounds like</em>. Your iTunes/Apple genre tag is never used for placement.</p>
+        </div>
+        <div class="panel">
+          <h3>Why genre scatters</h3>
+          <p class="about-p">"Rock" or "Alternative" aren't one sound — they're shelves with dozens of acoustic shapes.
+            The map shows that scatter honestly.</p>
+        </div>
+      </div>
+      <p class="about-sub">Raw atlas — every point visible (drag to rotate)</p>
+      <div class="map-card map-single">
+        <div id="aboutPlot" class="plot plot-tall"></div>
+      </div>
+    </div>
+
+    <footer>Pulse · maps sound, not behaviour</footer>
   </div>
 
   <div class="toast" id="toast"></div>

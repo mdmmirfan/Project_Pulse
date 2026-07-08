@@ -14,6 +14,10 @@ data/
 cookies.txt
 .cache
 
+# --- Screen recordings / large media (too big for GitHub) ---
+*.mov
+*.mp4
+
 # --- Redundant zip (the unzipped atlas_artifacts/ folder is committed instead) ---
 atlas_artifacts.zip
 

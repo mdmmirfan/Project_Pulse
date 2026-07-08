@@ -224,6 +224,7 @@ def _project_personal_corpus() -> list[dict]:
 
 def atlas_payload() -> dict:
     a = _STATE["atlas"]
+    medians = {k: float(a[k].median()) for k in INTERPRETABLE_FEATURES}
     points = []
     for _, r in a.iterrows():
         points.append({
@@ -231,10 +232,17 @@ def atlas_payload() -> dict:
             "genre": r["genre"],
             "sound": {"x": float(r["SX"]), "y": float(r["SY"]), "z": float(r["SZ"])},
             "feature": {"x": float(r["FX"]), "y": float(r["FY"]), "z": float(r["FZ"])},
+            "feats": {k: float(r[k]) for k in INTERPRETABLE_FEATURES},
         })
     return {
         "genres": sorted(a["genre"].unique().tolist()),
         "points": points,
         "reference_me": _STATE["reference_me"],
         "feature_labels": FEATURE_LABELS,
+        "feature_keys": INTERPRETABLE_FEATURES,
+        "feat_medians": medians,
+        "feature_poles": {
+            k: {"low": FEATURE_POLES[k][0], "high": FEATURE_POLES[k][1]}
+            for k in INTERPRETABLE_FEATURES
+        },
     }

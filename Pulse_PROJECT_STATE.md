@@ -3,22 +3,24 @@
 > Purpose: lets a fresh chat (or future-me) resume instantly. In a new conversation,
 > say: **"Read PROJECT_STATE.md and let's continue."**
 
-## ▶️ START HERE NEXT SESSION (2026-06-01)
-**Goal: publish to GitHub, THEN run the Atlas in Colab.**
-1. **Push the repo to GitHub** (walk the user through it; they have a GitHub account TBD).
-   Commit everything EXCEPT what's in `.gitignore` (env, raw `data/` audio, the 91 MB
-   `node-v24.15.0.pkg`, `cookies.txt`, `.env`). DO commit: notebooks, `pulse_core.py`,
-   `artifacts/`, the two CSVs, README, `result assets/`, the two Colab notebooks.
-2. **Set `REPO_URL`** to the new GitHub URL in BOTH Colab notebooks
-   (`Project_Pulse_Colab.ipynb` Step 2 and `Project_Pulse_Atlas_Colab.ipynb` Step 2).
-3. **Run `Project_Pulse_Atlas_Colab.ipynb` in Colab** (GPU runtime) → first real Atlas
-   build. Watch the FMA download/extract step (untested locally). Report any errors.
-4. **Rotate the Genius API key** on genius.com (was exposed earlier).
+## ▶️ START HERE NEXT SESSION
+**Goal: nail the Pulse Card header image, then deploy (or playlist input).**
+1. **Pulse Card header** — user still not happy with the top “constellation image.” Stats
+   section is closer (morphic glow path, Gemini stars, uppercase labels) but header needs
+   another pass — aim for reference specimen / Strava-route aesthetic (see assets in
+   `.cursor/.../assets/`). Code: `renderSignatureArt()` / `drawConstellationImage()` in
+   `web/frontend/app.js`.
+2. **Still open polish:** true KDE/grain heatmap on map, mock public gallery, playlist import.
+3. **Deploy** when ready: frontend → Vercel, backend → HuggingFace Spaces (free CPU).
+   GitHub repo exists but user **disconnected GitHub locally** (2026-06-07) for other
+   research — push/deploy when ready; not blocking local dev.
+4. **Optional Phase 1b:** Spotify playlist read → iTunes preview per track.
+5. **Still open:** rotate Genius API key on genius.com if lyrics features are used again.
 
-> WHY: both Colabs `git clone` the repo to get `pulse_core.py` + CSVs. Until the repo is
-> on GitHub, the clone fails ("No module named 'pulse_core'"). Temporary workaround
-> (no GitHub): manually upload `pulse_core.py`, `project_pulse_neural_data.csv`,
-> `project_pulse_interpretable_features.csv` into Colab via `files.upload()`.
+> **Run the local site:** from project root:
+> `pulse_env/bin/uvicorn web.backend.server:app --port 8000` → open http://localhost:8000
+> **Stop it:** `pkill -f "uvicorn web.backend.server"` (or Ctrl+C in the terminal).
+> Site only works while the server is running; localhost = your machine only until deployed.
 
 
 ## What this project is
@@ -46,7 +48,11 @@ space is defined by *sound* not *behavior*, with a deliberately cross-cultural c
 | `requirements.txt` | Core deps; heavy audio deps commented. |
 | `.gitignore`, `.env.example` | Repo hygiene + key template. |
 | `data/cluster_a_love/`, `data/cluster_b_dislike/` | The 99 source `.wav` files. |
-| `pulse_pipeline_ORIGINAL_backup.ipynb` | Original messy notebook (Genius key now scrubbed → placeholder). |
+| `atlas_artifacts/` | Frozen Music Atlas (sound+feature UMAP reducers/scalers + `atlas.csv`, 320 FMA tracks). |
+| `make_atlas_maps.py` | Renders labelled standalone Atlas HTML maps from `atlas_artifacts/` (~2s, no rebuild). |
+| `Project_Pulse_Atlas_*Map.html` | Labelled interactive Atlas maps (Sound + Feature lenses). |
+| `web/` | **Pulse web app** — FastAPI backend + frontend SPA. See WEB APP section. |
+| `web/README.md` | How to run the local site. |
 
 ## Environment
 - venv: `pulse_env/` (Python 3.13). Has pandas, numpy, librosa, torch, transformers,
@@ -141,7 +147,15 @@ claim it IS Spotify's model.
   (sklearn, numba-free) — an approximate overlay, honestly noted. The canonical
   reducer.transform path still works fine on Colab.
 
-- **(c) Web app — PHASE 1 design LOCKED (2026-05-31), not built yet.** See section below.
+- **(c) Web app — PHASE 1 LOCAL PROTOTYPE:** ✅ BUILT + user-tested (2026-05-31). See
+  WEB APP section below. User loves the iTunes Search API flow (autocomplete + previews).
+  Feedback notes pending for next polish pass.
+
+## GitHub + repo (2026-05-31, updated 2026-06-07)
+- **Public repo:** https://github.com/mdmmirfan/Project_Pulse (branch `main`) — may be
+  ahead/behind local; user disconnected GitHub from local workflow for other research.
+- Local changes in `web/` (frontend polish) may be **uncommitted** — check `git status` before push.
+- Gitignored (not committed): pulse_env/, data/ audio, .env, cookies.txt, *.pkg, zip.
 
 ## WEB APP — "Pulse" (Phase 1 plan, design locked 2026-05-31)
 **One-liner:** a free site where anyone adds songs (search by name, or later a playlist),
@@ -211,8 +225,32 @@ The site is TWO pieces because AST needs torch (too heavy for browser / Vercel s
    - Verified in browser: searched + placed real songs (e.g. Bohemian Rhapsody → "Warm ·
      Smooth · Steady · Melodic"), both lenses + Pulse Card render, dark+light both work.
    - Added deps to pulse_env: fastapi, uvicorn[standard]. See `web/requirements.txt`.
-2. ⬜ NEXT — polish pass (heatmap/density styling, mock public gallery, the "constellation"
-   card arrangement, refine copy) + maybe migrate frontend to Next.js for Vercel.
+   - User tested locally (2026-05-31 evening): loved iTunes autocomplete; will send
+     written notes next session for polish.
+2. ✅ **User feedback polish (2026-06-01 → 2026-06-07)** — mostly done; Pulse Card header TBD:
+   Round 1 (done): add/delete songs, 2D clouds, side legends, About tab, loading, split compare,
+   gradient logo, constellation card, 6-song minimum.
+   Round 2 — **ONE MAP simplification** (user-approved):
+   - Single 3D interactive sound map (removed dual Sound/Feature lens UI)
+   - Genre-coloured regional clouds; hover = genre mix + acoustic profile
+   - Removed compare vs avg liked/disliked toggles entirely
+   - About tab = raw point map + FMA/Spotify honesty
+   Round 3 (2026-06-07) — **constellation + card + UX** (session with user):
+   - ✅ 3D map: user songs = **Gemini star** markers (theme-aware: white/dark)
+   - ✅ 3D map: **MST constellation connections** (dashed curved lines between songs)
+   - ✅ Map nav: Reset / Top / Side / Front chips; `aspectmode: data`; double-click reset
+   - ✅ Loader: compact ring **beside legend** (not full-map overlay)
+   - ✅ Pulse Card stats: morphic glow path through 8 bipolar sliders; **uppercase** both poles
+   - ✅ Pulse Card stats: Gemini **stars** on sliders (not squares)
+   - ✅ Pulse Card header: static canvas constellation (MST edges + route + stars) — **works
+     but user wants better art; revisit next session**
+   - ⬜ Still TODO: Pulse Card header aesthetic (user), KDE/grain heatmap, mock gallery,
+     playlist import, deploy
+
+   **User confusion documented (teach in UI, don't implement wrong):**
+   - Sound map ≠ Spotify behaviour. Spotify = collaborative filtering (crowd streams).
+     Pulse Sound = AST neural fingerprint of actual audio. Close = sounds alike.
+   - Atlas = FMA research dataset (Western skew acknowledged in About tab).
 3. ⬜ Deploy: backend → HF Spaces, frontend → Vercel.
 4. ⬜ Phase 2: Supabase storage → gallery + usernames + playlist import (Spotify→iTunes).
 
